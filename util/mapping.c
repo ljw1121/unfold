@@ -1,24 +1,30 @@
 #include <stdio.h>
 #include "vector.h"
-#include "wannorb.h"
 #include "mapping.h"
 
-int setup_mapping(mapping * map, vector * shift, wannorb * target, wannorb * source, int ntgt, int nsrc) {
-/*
- * This function finds mapping between two systems
- */
+int setup_mapping(mapping * map, vector * target, vector * source, vector * shift, int * info_tgt, int * info_src, int ntgt, int nsrc) {
   int ii, jj;
-  wannorb tmp;
+  vector vt;
 
   for(ii=0; ii<ntgt; ii++) {
-    copy_wannorb(&tmp, target[ii]);
-
     if(shift!=NULL) {
-      tmp.site=vector_add(tmp.site, (*shift));
+      vector_add(&vt, target[ii], (*shift));
+    }
+    else {
+      vt.x[0]=(target+ii)->x[0];
+      vt.x[1]=(target+ii)->x[1];
+      vt.x[2]=(target+ii)->x[2];
     }
 
     for(jj=0; jj<nsrc; jj++) {
-      if ( match_wannorb(&((map+ii)->rvec), tmp, source[jj]) ) {
+      if(info_tgt && info_src) {  
+        /* if multiple source can match target,
+           then you need additional info from info_tgt & info_src
+             to determine the real mapping */
+        if(info_tgt[ii]!=info_src[jj])
+          continue;
+      }
+      if( translate_match(&((map+ii)->rvec), vt, source[jj]) ) {
         (map+ii)->nat=jj;
         break;
       }
@@ -29,49 +35,4 @@ int setup_mapping(mapping * map, vector * shift, wannorb * target, wannorb * sou
   }
 
   return 0;
-}
-
-int setup_symm_mapping(mapping * map, vector * symm, vector * shift, wannorb * wann, int nwann) {
-/*
- * This function performs a symmetry operation, and finds out the mapping of orbitals
- *   between the systems before and after the symmetry operation.
- *
- * output:
- *   map  :  The mapping between orbitals
- * input:
- *   symm :  The symmetry operation. symm[0:2] defines R, symm[3] defines T
- *   shift:  Additional translation, if desired
- *   wann :  Wannier orbitals
- *   nwann:  Number of orbital sites
- */
-
-  int ii, jj;
-  int result;
-
-  wannorb * tgt;
-
-  tgt=(wannorb *) malloc(sizeof(wannorb)*nwann);
-
-  for (ii=0; ii<nwann; ii++) {
-    /*
-     * Performs the symmetry operation
-     *   Each operation consists of a 
-     *    rotation R followed by a
-     *    translation T.
-     *   x'=R*x+T
-     */
-    init_wannorb(tgt+ii, NULL, wann[ii].l);
-    symmop_wannorb(tgt+ii, wann[ii], (*shift), symm);
-  }
-
-
-  result=setup_mapping(map, shift, tgt, wann, nwann, nwann);
-
-  for (ii=0; ii<nwann; ii++) {
-    finalize_wannorb(tgt[ii]);
-  }
-
-  free(tgt);
-
-  return result;
 }

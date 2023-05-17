@@ -8,31 +8,39 @@ int read_orbdef(int ** norb_per_sp, char * fuc, char * fsc, FILE * fin) {
   int ii, nsp;
   char line[MAXLEN];
   char * p;
+  //fgets(line, MAXLEN, fin);
+  //if(!fuc)
+  //  sscanf(line, "%s", fuc);
 
-  fgets(line, MAXLEN, fin);
-  p=line;
-  while((*p)!='\r' && (*p)!='\0' && (*p)!='\n') {
-    fuc[p-line]=(*p);
-    p++;
-  }
-  fuc[p-line]=0;
-
-  fgets(line, MAXLEN, fin);
-  p=line;
-  while((*p)!='\r' && (*p)!='\0' && (*p)!='\n') {
-    fsc[p-line]=(*p);
-    p++;
-  }
-  fsc[p-line]=0;
-
-  fgets(line, MAXLEN, fin);
-  sscanf(line, " %d", &nsp);
+  //fgets(line, MAXLEN, fin);
+  //if(!fsc)
+  //  sscanf(line, "%s", fsc);
+  //fgets(line, MAXLEN, fin);
+  //sscanf(line, " %d", &nsp);
+  fscanf(fin,"%s\n",fuc);
+  fscanf(fin,"%s\n",fsc);
+  fscanf(fin, " %d\n", &nsp);
+  // printf("fuc = %s\n",fuc);
+  // printf("fsc = %s\n",fsc);
+  // printf("nsp = %d\n",nsp);
+  //fgets(line, MAXLEN, fin);
+  fscanf(fin, "%[^\n]",line);
   (* norb_per_sp)=(int *) malloc(sizeof(int)*nsp);
-  fgets(line, MAXLEN, fin);
+
+  ii = 0;
   p=strtok(line, " ");
-  for(ii=0; ii<nsp; ii++) {
+  while (p != NULL && ii < MAXLEN){
     sscanf(p, "%d", (*norb_per_sp)+ii);
+    ii = ii + 1;
     p=strtok(NULL, " ");
   }
+  // for (ii=0;ii<nsp;ii++){
+  //   printf("%d",(*norb_per_sp)[ii]);
+  // }
+  //for(ii=0; ii<nsp; ii++) {
+  //  printf("Hello0003\n");
+  //  sscanf(p, "%d", (*norb_per_sp)+ii);
+  //  p=strtok(NULL, " ");
+  //}
   return nsp;
 }

@@ -151,7 +151,7 @@ int main(int argc, char ** argv) {
     apply_doping(ham0, dham, orblst, orbsub, shftvec[idp]);
   }
 
-  write_ham(&ham0, "output");
+  write_ham(&ham0);
 
   free(orblst);
   free(shftvec);

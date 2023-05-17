@@ -11,7 +11,6 @@ MODULE input
   character(len=3) fmode                    ! Hamiltonian file mode: n: original wannier90 output r: reduced format
   integer nkpt                               ! Number of output kpoints (in UC)
   real(dp), allocatable :: kvec(:, :)        ! Output K-points
-  real(dp), allocatable :: xk(:)
   !
 CONTAINS
   !
@@ -87,7 +86,6 @@ CONTAINS
         CALL para_sync(nk_per_sec)
         nkpt=(nksec-1)*nk_per_sec+1
         allocate(kvec(1:3, nkpt))
-        allocate(xk(nkpt))
         if (inode.eq.0) then
           write(stdout, *) "   #   : Band structure mode"
           write(stdout, '(1A,I5,1A)') "   #   :  with total of ", nkpt, " K-points"

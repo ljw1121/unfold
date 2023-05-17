@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <stdlib.h>
 #include "constants.h"
 #include "wanndata.h"
 
@@ -37,7 +37,7 @@ void mix_ham(wanndata * wann, wanndata * wann1, wanndata * wann2, double x) {
   }
 }
 
-main(int argc, char ** argv) {
+int main(int argc, char ** argv) {
   double x;  /* Percentage of first hamiltonian */
   double ef1, ef2;
 
@@ -71,11 +71,11 @@ main(int argc, char ** argv) {
     shift_ham(&wann1, ef1);
     shift_ham(&wann2, ef2);
     mix_ham(&wann, &wann1, &wann2, x);
-    write_ham(&wann, "output");
+    write_ham(&wann);
   }
 
   finalize_wanndata(wann1);
   finalize_wanndata(wann2);
   finalize_wanndata(wann);
-
+  return 0;
 }
