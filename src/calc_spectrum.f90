@@ -33,10 +33,15 @@ SUBROUTINE calc_spectrum_k(kv_uc)
     kv(ii)=ibz(SUM(ksi(:, ii)*kv_uc(:)))
   enddo
   !
+  !write(*,*) "SIZE"
+  !write(*,*) SIZE(work,1),SIZE(work,2)
+  !write(*,*) SIZE(eig)
   do ii=1, nrpt
     ratio=SUM(kv(:)*rvec(:, ii))
     fact=exp(-cmplx_i*twopi*ratio)/weight(ii)
     work(:,:)=work(:,:)+fact*ham(:,:,ii)
+    !write(*,*) "ii: ratio,weight"
+    !write(*,*) ii,ratio,weight(ii)
   enddo
   !
 #if defined _INTEL

@@ -63,6 +63,16 @@ SUBROUTINE read_reduced_ham(seed)
     read(fin, '(15I5)') (wt(iw),iw=1,nrpt)
     weight(:)=wt(:)
     deallocate(wt)
+
+    !tmp1 = nrpt/15
+    !tmp2 = nrpt - 15*tmp1
+    !do i = 1,tmp1
+    !    read(fin,*) weight(15*i-14:15*i:1)
+    !end do
+    !if (tmp2 /= 0) then
+    !    read(fin,*) weight(15*tmp1+1:15*tmp1+tmp2:1)
+    !endif
+
     !
     do iw=1, nrpt
       read(fin, '(3I5)') t1, t2, t3
@@ -97,7 +107,7 @@ SUBROUTINE read_ham(seed)
   IMPLICIT NONE
   !
   CHARACTER(len=80) seed
-  INTEGER irpt, iorb, jorb, t1, t2, t3, t4, t5
+  INTEGER irpt, iorb, jorb, t1, t2, t3, t4, t5, i, tmp1, tmp2
   INTEGER, ALLOCATABLE :: wt(:)
   REAL(DP) a, b
   !
@@ -123,10 +133,18 @@ SUBROUTINE read_ham(seed)
   allocate(rvec(1:3, 1:nrpt))
   !
   if (inode.eq.0) then
-    allocate(wt(1:nrpt))
-    read(fin, '(15I5)') (wt(irpt),irpt=1,nrpt)
-    weight(:)=wt(:)
-    deallocate(wt)
+    !allocate(wt(1:nrpt))
+    !read(fin, '(15I5)') (wt(irpt),irpt=1,nrpt)
+    !weight(:)=wt(:)
+    !deallocate(wt)
+    tmp1 = nrpt/15
+    tmp2 = nrpt - 15*tmp1
+    do i = 1,tmp1
+        read(fin,*) weight(15*i-14:15*i:1)
+    end do
+    if (tmp2 /= 0) then
+        read(fin,*) weight(15*tmp1+1:15*tmp1+tmp2:1)
+    endif
     !
     do irpt=1, nrpt
       do iorb=1, norb
@@ -145,6 +163,12 @@ SUBROUTINE read_ham(seed)
     close(unit=fin)
     write(stdout, *) " # Done."
   endif
+
+  !write(*,*) "weight"
+  !do irpt  = 1,nrpt
+  !    write(*,*) weight(irpt)
+  !end do
+  !write(*,*) "end weight"
   !
   CALL para_sync(ham, norb, norb, nrpt)
   CALL para_sync(weight, nrpt)
