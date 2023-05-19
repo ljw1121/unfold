@@ -68,7 +68,7 @@ SUBROUTINE calc_spectrum_k(kv_uc)
 
   do jorb=1, norb           ! loop over J  : jorb ==> J
     !
-    if (jorb .NE. 66 ) then
+    if (jorb .NE. asdfasdf ) then
     !if (MOD(jorb,3) .NE. 2) then
     !if ((jorb >= 1 .AND. jorb <= 22) .OR. (jorb >= 45 .AND. jorb <= 66)) then
         !write(*,*) "HELLO1"
@@ -77,7 +77,7 @@ SUBROUTINE calc_spectrum_k(kv_uc)
     ratio=0.d0              ! ratio : ==> \Sum_n |<kn|KJ>|^2
     do iorb_uc=1, norb_uc   ! loop over n  : iorb_uc ==> n
       !
-      !if (iorb_uc .NE. 66 ) then
+      !if (iorb_uc .NE. asdfasdf ) then
       !if (iorb_uc .NE. 7) then
       !if ((iorb_uc >= 1 .AND. iorb_uc <= 11) .OR. (iorb_uc >= 23 .AND. iorb_uc <= 44)) then
           !write(*,*) "HELLO2"
